@@ -35,62 +35,64 @@ async function getHomeData() {
 
     return { restaurant, platsVedettes, avis };
   } catch (error) {
-    console.error('Erreur lors de la récupération des données:', error);
+    console.error("Erreur lors de la récupération des données:", error);
     // Retourner des données par défaut en cas d'erreur de base de données
     return {
       restaurant: {
-        id: 'default',
-        nom: 'Maison Lila',
-        description: 'Restaurant gastronomique français situé au cœur de Paris',
-        adresse: '15 Rue de la Paix, 75001 Paris',
-        telephone: '+33 1 42 60 30 30',
-        email: 'contact@maison-lila.fr',
+        id: "default",
+        nom: "Maison Lila",
+        description: "Restaurant gastronomique français situé au cœur de Paris",
+        adresse: "15 Rue de la Paix, 75001 Paris",
+        telephone: "+33 1 42 60 30 30",
+        email: "contact@maison-lila.fr",
         horaires: {
           mardi: { midi: "12h-14h30", soir: "19h30-22h30" },
           mercredi: { midi: "12h-14h30", soir: "19h30-22h30" },
           jeudi: { midi: "12h-14h30", soir: "19h30-22h30" },
           vendredi: { midi: "12h-14h30", soir: "19h30-22h30" },
-          samedi: { midi: "12h-14h30", soir: "19h30-22h30" }
+          samedi: { midi: "12h-14h30", soir: "19h30-22h30" },
         },
         capacite: 60,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       platsVedettes: [
         {
-          id: 'foie-gras-1',
-          nom: 'Foie gras mi-cuit au Sauternes',
-          description: 'Foie gras de canard du Périgord, gelée de Sauternes, brioche toastée',
-          prix: 45.00,
+          id: "foie-gras-1",
+          nom: "Foie gras mi-cuit au Sauternes",
+          description:
+            "Foie gras de canard du Périgord, gelée de Sauternes, brioche toastée",
+          prix: 45.0,
           image: null,
-          tags: 'signature,specialite',
-          allergenes: '',
+          tags: "signature,specialite",
+          allergenes: "",
           disponible: true,
-          categorieId: 'signature',
+          categorieId: "signature",
           createdAt: new Date(),
           updatedAt: new Date(),
           categorie: {
-            id: 'signature',
-            nom: 'Signature',
+            id: "signature",
+            nom: "Signature",
             ordre: 0,
             active: true,
             createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        }
+            updatedAt: new Date(),
+          },
+        },
       ],
       avis: [
         {
-          id: 'default-avis-1',
-          auteur: 'Marie Dubois',
+          id: "default-avis-1",
+          auteur: "Marie Dubois",
           email: null,
           note: 5,
-          commentaire: 'Une expérience culinaire exceptionnelle ! Le foie gras était divin.',
+          commentaire:
+            "Une expérience culinaire exceptionnelle ! Le foie gras était divin.",
           approuve: true,
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-15')
-        }
-      ]
+          createdAt: new Date("2024-01-15"),
+          updatedAt: new Date("2024-01-15"),
+        },
+      ],
     };
   }
 }

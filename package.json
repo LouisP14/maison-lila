@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && npx tsx scripts/init-production.ts && next build",
-    "vercel-build": "prisma generate && prisma db push && npx tsx scripts/init-production.ts && next build",
+    "build": "next build",
+    "vercel-build": "cross-env DATABASE_URL=file:./production.db prisma generate && cross-env DATABASE_URL=file:./production.db prisma db push && cross-env DATABASE_URL=file:./production.db npx tsx scripts/init-production.ts && cross-env DATABASE_URL=file:./production.db next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -48,6 +48,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "prettier": "^3.3.0",

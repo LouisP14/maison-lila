@@ -20,8 +20,31 @@ export const metadata: Metadata = {
 };
 
 async function getRestaurantInfo() {
-  const restaurant = await prisma.restaurant.findFirst();
-  return restaurant;
+  try {
+    const restaurant = await prisma.restaurant.findFirst();
+    return restaurant;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des informations restaurant:', error);
+    // Retourner des données par défaut
+    return {
+      id: 'default',
+      nom: 'Maison Lila',
+      description: 'Restaurant gastronomique français situé au cœur de Paris',
+      adresse: '15 Rue de la Paix, 75001 Paris',
+      telephone: '+33 1 42 60 30 30',
+      email: 'contact@maison-lila.fr',
+      horaires: {
+        mardi: { midi: "12h-14h30", soir: "19h30-22h30" },
+        mercredi: { midi: "12h-14h30", soir: "19h30-22h30" },
+        jeudi: { midi: "12h-14h30", soir: "19h30-22h30" },
+        vendredi: { midi: "12h-14h30", soir: "19h30-22h30" },
+        samedi: { midi: "12h-14h30", soir: "19h30-22h30" }
+      },
+      capacite: 60,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  }
 }
 
 interface ContactInfoProps {

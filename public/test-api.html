@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test API Réservation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        background-color: #8aa6a3;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 5px;
+      }
+      button:hover {
+        background-color: #7a9591;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+      }
+      .success {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Test API de Réservation - Maison Lila</h1>
+      <p>
+        Cliquez sur le bouton pour tester l'envoi d'une réservation et l'email
+        de confirmation.
+      </p>
+
+      <button onclick="testReservation()">📧 Tester Réservation + Email</button>
+      <button onclick="clearResult()">🧹 Effacer</button>
+
+      <div id="result"></div>
+    </div>
+
+    <script>
+      async function testReservation() {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "⏳ Envoi de la réservation...";
+        resultDiv.className = "result";
+
+        const testData = {
+          date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split("T")[0],
+          time: "19:30",
+          guests: 2,
+          firstName: "Test",
+          lastName: "Utilisateur",
+          email: "test@example.com",
+          phone: "0123456789",
+          specialRequests:
+            "Test de confirmation par email depuis le navigateur",
+        };
+
+        try {
+          const response = await fetch("/api/reservations", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(testData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.className = "result success";
+            resultDiv.innerHTML = `✅ SUCCÈS - Réservation créée!
+
+📧 ID de réservation: ${data.reservation.id}
+👤 Nom: ${data.reservation.nom}
+📧 Email: ${data.reservation.email}
+📅 Date: ${new Date(data.reservation.date).toLocaleDateString("fr-FR")}
+⏰ Heure: ${data.reservation.heure}
+👥 Nombre de couverts: ${data.reservation.nbCouverts}
+
+💌 Email de confirmation envoyé (vérifiez les logs du serveur)`;
+          } else {
+            resultDiv.className = "result error";
+            resultDiv.innerHTML = `❌ ERREUR - Échec de la réservation:
+
+${data.message || "Erreur inconnue"}
+${JSON.stringify(data, null, 2)}`;
+          }
+        } catch (error) {
+          resultDiv.className = "result error";
+          resultDiv.innerHTML = `💥 ERREUR DE RÉSEAU:
+
+${error.message}`;
+        }
+      }
+
+      function clearResult() {
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("result").className = "";
+      }
+    </script>
+  </body>
+</html>

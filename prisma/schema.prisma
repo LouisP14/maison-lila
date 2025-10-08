@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id          String @id @default(cuid())
+  nom         String
+  description String
+  adresse     String
+  telephone   String
+  email       String
+  horaires    Json   // Structure: { lundi: { midi: "12h-14h", soir: "19h-22h" }, ... }
+  capacite    Int    @default(50)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("restaurants")
+}
+
+model Categorie {
+  id     String @id @default(cuid())
+  nom    String @unique
+  ordre  Int    @default(0)
+  active Boolean @default(true)
+  
+  plats Plat[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Plat {
+  id          String   @id @default(cuid())
+  nom         String
+  description String
+  prix        Float
+  image       String?
+  tags        String   @default("") // JSON string: "vegetarien,sans_gluten,vegan"
+  allergenes  String   @default("") // JSON string: "gluten,lactose,fruits_a_coque"
+  disponible  Boolean  @default(true)
+  
+  categorieId String
+  categorie   Categorie @relation(fields: [categorieId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categorieId])
+  @@map("plats")
+}
+
+model Avis {
+  id          String @id @default(cuid())
+  auteur      String
+  email       String?
+  note        Int    // 1 à 5 étoiles
+  commentaire String
+  approuve    Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([approuve])
+  @@index([createdAt])
+  @@map("avis")
+}
+
+model Creneau {
+  id           String @id @default(cuid())
+  jour         Int    // 0=dimanche, 1=lundi, ..., 6=samedi
+  heureDebut   String // Format "HH:mm"
+  heureFin     String // Format "HH:mm"
+  capaciteMax  Int
+  actif        Boolean @default(true)
+  
+  reservations Reservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jour, actif])
+  @@map("creneaux")
+}
+
+model Reservation {
+  id         String            @id @default(cuid())
+  token      String            @unique @default(cuid())
+  nom        String
+  email      String
+  telephone  String
+  date       DateTime
+  heure      String            // Format "HH:mm"
+  nbCouverts Int
+  message    String?
+  statut     StatutReservation @default(PENDING)
+  
+  creneauId String?
+  creneau   Creneau? @relation(fields: [creneauId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date, heure])
+  @@index([statut])
+  @@index([email])
+  @@map("reservations")
+}
+
+enum StatutReservation {
+  PENDING   // En attente
+  CONFIRMED // Confirmée
+  CANCELLED // Annulée
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  titre       String
+  slug        String   @unique
+  extrait     String
+  contenu     String   // Contenu HTML/MDX
+  image       String?
+  categorie   String   @default("Actualités")
+  tags        String   @default("") // JSON string: "actualite,evenement"
+  publie      Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([publie])
+  @@index([slug])
+  @@index([categorie])
+  @@map("articles")
+}
